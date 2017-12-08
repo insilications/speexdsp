@@ -4,7 +4,7 @@
 #
 Name     : speexdsp
 Version  : 1.2rc3
-Release  : 1
+Release  : 2
 URL      : https://ftp.osuosl.org/pub/xiph/releases/speex/speexdsp-1.2rc3.tar.gz
 Source0  : https://ftp.osuosl.org/pub/xiph/releases/speex/speexdsp-1.2rc3.tar.gz
 Summary  : An open-source, patent-free speech codec
@@ -48,16 +48,26 @@ lib components for the speexdsp package.
 
 %prep
 %setup -q -n speexdsp-1.2rc3
+pushd ..
+cp -a speexdsp-1.2rc3 buildavx2
+popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1512739678
+export SOURCE_DATE_EPOCH=1512739916
 %configure --disable-static
 make  %{?_smp_mflags}
 
+pushd ../buildavx2/
+export CFLAGS="$CFLAGS -m64 -march=haswell"
+export CXXFLAGS="$CXXFLAGS -m64 -march=haswell"
+export LDFLAGS="$LDFLAGS -m64 -march=haswell"
+%configure --disable-static    --libdir=/usr/lib64/haswell --bindir=/usr/bin/haswell
+make  %{?_smp_mflags}
+popd
 %check
 export LANG=C
 export http_proxy=http://127.0.0.1:9/
@@ -66,12 +76,16 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1512739678
+export SOURCE_DATE_EPOCH=1512739916
 rm -rf %{buildroot}
+pushd ../buildavx2/
+%make_install
+popd
 %make_install
 
 %files
 %defattr(-,root,root,-)
+/usr/lib64/haswell/pkgconfig/speexdsp.pc
 
 %files dev
 %defattr(-,root,root,-)
@@ -81,6 +95,7 @@ rm -rf %{buildroot}
 /usr/include/speex/speex_resampler.h
 /usr/include/speex/speexdsp_config_types.h
 /usr/include/speex/speexdsp_types.h
+/usr/lib64/haswell/libspeexdsp.so
 /usr/lib64/libspeexdsp.so
 /usr/lib64/pkgconfig/speexdsp.pc
 
@@ -90,5 +105,7 @@ rm -rf %{buildroot}
 
 %files lib
 %defattr(-,root,root,-)
+/usr/lib64/haswell/libspeexdsp.so.1
+/usr/lib64/haswell/libspeexdsp.so.1.5.0
 /usr/lib64/libspeexdsp.so.1
 /usr/lib64/libspeexdsp.so.1.5.0
