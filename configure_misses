@@ -1,8 +1,9 @@
 Configure miss: NEON in current arch/CFLAGS
 Configure miss: sys/audioio.h usability
-Configure miss: sys/audioio.h presence
 Configure miss: sys/audioio.h
 Configure miss: NEON in current arch/CFLAGS
 Configure miss: sys/audioio.h usability
-Configure miss: sys/audioio.h presence
+Configure miss: sys/audioio.h
+Configure miss: NEON in current arch/CFLAGS
+Configure miss: sys/audioio.h usability
 Configure miss: sys/audioio.h
