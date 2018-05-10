@@ -4,7 +4,7 @@
 #
 Name     : speexdsp
 Version  : 1.2rc3
-Release  : 5
+Release  : 6
 URL      : https://ftp.osuosl.org/pub/xiph/releases/speex/speexdsp-1.2rc3.tar.gz
 Source0  : https://ftp.osuosl.org/pub/xiph/releases/speex/speexdsp-1.2rc3.tar.gz
 Summary  : An open-source, patent-free speech codec
