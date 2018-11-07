@@ -4,14 +4,14 @@
 #
 Name     : speexdsp
 Version  : 1.2rc3
-Release  : 7
+Release  : 8
 URL      : https://ftp.osuosl.org/pub/xiph/releases/speex/speexdsp-1.2rc3.tar.gz
 Source0  : https://ftp.osuosl.org/pub/xiph/releases/speex/speexdsp-1.2rc3.tar.gz
 Summary  : An open-source, patent-free speech codec
 Group    : Development/Tools
 License  : BSD-3-Clause
-Requires: speexdsp-lib
-Requires: speexdsp-doc
+Requires: speexdsp-lib = %{version}-%{release}
+Requires: speexdsp-license = %{version}-%{release}
 BuildRequires : pkgconfig(fftw3f)
 
 %description
@@ -23,8 +23,8 @@ codec.
 %package dev
 Summary: dev components for the speexdsp package.
 Group: Development
-Requires: speexdsp-lib
-Provides: speexdsp-devel
+Requires: speexdsp-lib = %{version}-%{release}
+Provides: speexdsp-devel = %{version}-%{release}
 
 %description dev
 dev components for the speexdsp package.
@@ -41,9 +41,18 @@ doc components for the speexdsp package.
 %package lib
 Summary: lib components for the speexdsp package.
 Group: Libraries
+Requires: speexdsp-license = %{version}-%{release}
 
 %description lib
 lib components for the speexdsp package.
+
+
+%package license
+Summary: license components for the speexdsp package.
+Group: Default
+
+%description license
+license components for the speexdsp package.
 
 
 %prep
@@ -60,22 +69,24 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1526427236
+export SOURCE_DATE_EPOCH=1541618341
 %configure --disable-static
 make  %{?_smp_mflags}
 
+unset PKG_CONFIG_PATH
 pushd ../buildavx2/
 export CFLAGS="$CFLAGS -m64 -march=haswell"
 export CXXFLAGS="$CXXFLAGS -m64 -march=haswell"
 export LDFLAGS="$LDFLAGS -m64 -march=haswell"
-%configure --disable-static    --libdir=/usr/lib64/haswell --bindir=/usr/bin/haswell
+%configure --disable-static
 make  %{?_smp_mflags}
 popd
+unset PKG_CONFIG_PATH
 pushd ../buildavx512/
-export CFLAGS="$CFLAGS -m64 -march=skylake-avx512"
-export CXXFLAGS="$CXXFLAGS -m64 -march=skylake-avx512"
+export CFLAGS="$CFLAGS -m64 -march=skylake-avx512 -mprefer-vector-width=512"
+export CXXFLAGS="$CXXFLAGS -m64 -march=skylake-avx512 -mprefer-vector-width=512"
 export LDFLAGS="$LDFLAGS -m64 -march=skylake-avx512"
-%configure --disable-static    --libdir=/usr/lib64/haswell/avx512_1 --bindir=/usr/bin/haswell/avx512_1
+%configure --disable-static
 make  %{?_smp_mflags}
 popd
 %check
@@ -84,15 +95,21 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
+cd ../buildavx2;
+make VERBOSE=1 V=1 %{?_smp_mflags} check || :
+cd ../buildavx512;
+make VERBOSE=1 V=1 %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1526427236
+export SOURCE_DATE_EPOCH=1541618341
 rm -rf %{buildroot}
-pushd ../buildavx2/
-%make_install
-popd
+mkdir -p %{buildroot}/usr/share/package-licenses/speexdsp
+cp COPYING %{buildroot}/usr/share/package-licenses/speexdsp/COPYING
 pushd ../buildavx512/
-%make_install
+%make_install_avx512
+popd
+pushd ../buildavx2/
+%make_install_avx2
 popd
 %make_install
 
@@ -107,20 +124,24 @@ popd
 /usr/include/speex/speex_resampler.h
 /usr/include/speex/speexdsp_config_types.h
 /usr/include/speex/speexdsp_types.h
+/usr/lib64/haswell/avx512_1/libspeexdsp.so
 /usr/lib64/haswell/libspeexdsp.so
 /usr/lib64/libspeexdsp.so
 /usr/lib64/pkgconfig/speexdsp.pc
 
 %files doc
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 %doc /usr/share/doc/speexdsp/*
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib64/haswell/avx512_1/libspeexdsp.so
 /usr/lib64/haswell/avx512_1/libspeexdsp.so.1
 /usr/lib64/haswell/avx512_1/libspeexdsp.so.1.5.0
 /usr/lib64/haswell/libspeexdsp.so.1
 /usr/lib64/haswell/libspeexdsp.so.1.5.0
 /usr/lib64/libspeexdsp.so.1
 /usr/lib64/libspeexdsp.so.1.5.0
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/speexdsp/COPYING
