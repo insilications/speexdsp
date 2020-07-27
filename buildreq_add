@@ -1,2 +1,11 @@
 # This file contains additional build requirements that did not get
 # picked up automatically. One name per line, no whitespace.
+pkg-config
+util-linux
+glibc
+glibc-dev
+glibc-staticdev
+libogg-dev
+libogg-staticdev
+speex-dev
+findutils
