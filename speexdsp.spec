@@ -5,7 +5,7 @@
 %define keepstatic 1
 Name     : speexdsp
 Version  : 1.2.0
-Release  : 13
+Release  : 14
 URL      : https://ftp.osuosl.org/pub/xiph/releases/speex/speexdsp-1.2.0.tar.gz
 Source0  : https://ftp.osuosl.org/pub/xiph/releases/speex/speexdsp-1.2.0.tar.gz
 Summary  : An open-source, patent-free speech codec
@@ -79,7 +79,7 @@ unset http_proxy
 unset https_proxy
 unset no_proxy
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1595827014
+export SOURCE_DATE_EPOCH=1595827095
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -88,7 +88,7 @@ export NM=gcc-nm
 make  %{?_smp_mflags}  V=1 VERBOSE=1
 
 %install
-export SOURCE_DATE_EPOCH=1595827014
+export SOURCE_DATE_EPOCH=1595827095
 rm -rf %{buildroot}
 %make_install
 
