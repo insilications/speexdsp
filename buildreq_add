@@ -9,3 +9,5 @@ libogg-dev
 libogg-staticdev
 speex-dev
 findutils
+fftw-dev
+fftw-staticdev
