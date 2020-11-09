@@ -4,7 +4,7 @@
 #
 Name     : speexdsp
 Version  : 1.2.0
-Release  : 12
+Release  : 13
 URL      : https://ftp.osuosl.org/pub/xiph/releases/speex/speexdsp-1.2.0.tar.gz
 Source0  : https://ftp.osuosl.org/pub/xiph/releases/speex/speexdsp-1.2.0.tar.gz
 Summary  : An open-source, patent-free speech codec
@@ -100,14 +100,14 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1572464258
+export SOURCE_DATE_EPOCH=1604905723
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
 export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
 export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 %configure --disable-static
 make  %{?_smp_mflags}
@@ -125,6 +125,8 @@ unset PKG_CONFIG_PATH
 pushd ../buildavx2/
 export CFLAGS="$CFLAGS -m64 -march=haswell"
 export CXXFLAGS="$CXXFLAGS -m64 -march=haswell"
+export FFLAGS="$FFLAGS -m64 -march=haswell"
+export FCFLAGS="$FCFLAGS -m64 -march=haswell"
 export LDFLAGS="$LDFLAGS -m64 -march=haswell"
 %configure --disable-static
 make  %{?_smp_mflags}
@@ -133,6 +135,8 @@ unset PKG_CONFIG_PATH
 pushd ../buildavx512/
 export CFLAGS="$CFLAGS -m64 -march=skylake-avx512 -mprefer-vector-width=512"
 export CXXFLAGS="$CXXFLAGS -m64 -march=skylake-avx512 -mprefer-vector-width=512"
+export FFLAGS="$FFLAGS -m64 -march=skylake-avx512 -mprefer-vector-width=512"
+export FCFLAGS="$FCFLAGS -m64 -march=skylake-avx512 -mprefer-vector-width=512"
 export LDFLAGS="$LDFLAGS -m64 -march=skylake-avx512"
 %configure --disable-static
 make  %{?_smp_mflags}
@@ -142,16 +146,16 @@ export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+make %{?_smp_mflags} check
 cd ../build32;
-make VERBOSE=1 V=1 %{?_smp_mflags} check || :
+make %{?_smp_mflags} check || :
 cd ../buildavx2;
-make VERBOSE=1 V=1 %{?_smp_mflags} check || :
+make %{?_smp_mflags} check || :
 cd ../buildavx512;
-make VERBOSE=1 V=1 %{?_smp_mflags} check || :
+make %{?_smp_mflags} check || :
 
 %install
-export SOURCE_DATE_EPOCH=1572464258
+export SOURCE_DATE_EPOCH=1604905723
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/speexdsp
 cp %{_builddir}/speexdsp-1.2.0/COPYING %{buildroot}/usr/share/package-licenses/speexdsp/7f3f67aef48ead049bebdab307c04c2e03342710
